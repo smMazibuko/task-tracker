@@ -10,4 +10,8 @@ public class Task {
         this.isComplete = false;
     }
 
+    void completeTask(){
+        isComplete = true;
+    }
+
 }

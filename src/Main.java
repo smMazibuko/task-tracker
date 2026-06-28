@@ -21,6 +21,7 @@ void main(){
 }
 
 Task addTask(int id){
+
     Scanner input = new Scanner(System.in);
 
     System.out.println("\nDescribe your new task:");
@@ -31,4 +32,5 @@ Task addTask(int id){
     System.out.println("Task created!");
     input.close();
     return newTask;
+
 }
