@@ -13,18 +13,20 @@ void main(){
         System.out.println("Select an option: \n1) View all tasks\n2) Create a new task\n3) End program");
         userChoice = mainScanner.nextInt();
 
-        if (userChoice == 1) {
-            if (!taskList.isEmpty()) {viewAllTasks(taskList);}
-            else {
-                System.out.println("No tasks found.");
-            };
-        }
+        switch (userChoice){
+            case 1:
+                if (!taskList.isEmpty()) {viewAllTasks(taskList);}
+                else {System.out.println("No tasks found.\n");};
 
-        if (userChoice == 2){
-            taskList.add(addTask(currentIndex + 1));
-        }
+            case 2:
+                taskList.add(addTask(currentIndex + 1));
 
-        if (userChoice < 1 || userChoice >  3) System.out.println("Invalid input.");
+            case 3:
+                break;
+
+            default:
+                System.out.println("Invalid input.\n");
+        }
 
     }
 
