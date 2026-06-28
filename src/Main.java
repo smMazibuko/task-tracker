@@ -1,5 +1,5 @@
 
-void main(){
+void main() {
 
     ArrayList<Task> taskList = new ArrayList<Task>();
     int currentIndex = 0;
@@ -8,16 +8,20 @@ void main(){
 
     System.out.println("Welcome to Task Tracker.\n");
 
-    while (userChoice != 3){
+    while (userChoice != 3) {
 
         System.out.println("Select an option: \n1) View all tasks\n2) Create a new task\n3) End program");
         userChoice = mainScanner.nextInt();
 
-        switch (userChoice){
+        switch (userChoice) {
             case 1:
-                if (!taskList.isEmpty()) {viewAllTasks(taskList);}
-                else {System.out.println("No tasks found.\n");};
+                if (!taskList.isEmpty()) {
+                    viewAllTasks(taskList);
+                } else {
+                    System.out.println("No tasks found.\n");
+                }
 
+            // bug: app breaks after creating one task
             case 2:
                 taskList.add(addTask(currentIndex + 1));
 
@@ -31,11 +35,12 @@ void main(){
     }
 
     mainScanner.close();
-    System.out.println("\nGoodbye");
+    System.out.println("\nGoodbye.");
 
 }
 
-Task addTask(int id){
+// Creates a new task
+Task addTask(int id) {
 
     Scanner input = new Scanner(System.in);
 
@@ -44,23 +49,25 @@ Task addTask(int id){
 
     Task newTask = new Task(id, newTaskDescription);
 
-    System.out.println("Task created!");
+    System.out.println("Task created!\n");
     input.close();
     return newTask;
 
 }
 
-void viewTask(ArrayList<Task> taskList, int id){
+// Displays the details of a task using an index
+void viewTask(ArrayList<Task> taskList, int id) {
 
     System.out.println((id + 1) + ". " + taskList.get(id));
 
 }
 
-void viewAllTasks(ArrayList<Task> taskList){
+// Displays every task the list
+void viewAllTasks(ArrayList<Task> taskList) {
 
     System.out.println("\nAll Tasks:\n");
 
-    for (int i = 0; i < taskList.size(); i++){
+    for (int i = 0; i < taskList.size(); i++) {
         System.out.println((i + 1) + ". " + taskList.get(i).description);
     }
 
