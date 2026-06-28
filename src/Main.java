@@ -36,6 +36,12 @@ Task addTask(int id){
 
 }
 
+void viewTask(ArrayList<Task> taskList, int id){
+
+    System.out.println((id + 1) + ". " + taskList.get(id));
+
+}
+
 void viewAllTasks(ArrayList<Task> taskList){
 
     System.out.println("\nAll Tasks:\n");
