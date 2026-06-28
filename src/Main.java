@@ -4,10 +4,9 @@ void main(){
     ArrayList<Task> taskList = new ArrayList<Task>();
     int currentIndex = 0;
     int userChoice;
+    Scanner mainScanner = new Scanner(System.in);
 
     System.out.println("Welcome to Task Tracker.\n");
-
-    Scanner mainScanner = new Scanner(System.in);
 
     System.out.println("Select an option: \n1) Create new task.");
     userChoice = mainScanner.nextInt();
@@ -15,6 +14,8 @@ void main(){
     if (userChoice == 1){
         taskList.add(addTask(currentIndex + 1));
     }
+
+    // if (!taskList.isEmpty()) viewAllTasks(taskList);
 
     System.out.println("\nGoodbye");
 
@@ -32,5 +33,15 @@ Task addTask(int id){
     System.out.println("Task created!");
     input.close();
     return newTask;
+
+}
+
+void viewAllTasks(ArrayList<Task> taskList){
+
+    System.out.println("\nAll Tasks:\n");
+
+    for (int i = 0; i < taskList.size(); i++){
+        System.out.println((i + 1) + ". " + taskList.get(i).description);
+    }
 
 }
