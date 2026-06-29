@@ -2,19 +2,19 @@
 void main() {
 
     ArrayList<Task> taskList = new ArrayList<Task>();
-    int currentIndex = 0;
     int userChoice = 1;
     Scanner userInput = new Scanner(System.in);
 
     System.out.println("Welcome to Task Tracker.\n");
 
-    while (userChoice != 3) {
+    while (userChoice != 4) {
 
-        System.out.println("Select an option: \n1) View all tasks\n2) Create a new task\n3) End program");
+        System.out.println("Select an option: \n1) View all tasks\n2) Create a new task\n3) Edit a task\n4) End program");
         userChoice = userInput.nextInt();
         userInput.nextLine(); // consume newline left over by nextInt()
 
         switch (userChoice) {
+            // view all tasks
             case 1:
                 if (!taskList.isEmpty()) {
                     viewAllTasks(taskList);
@@ -23,12 +23,18 @@ void main() {
                 }
                 break;
 
+            // create task
             case 2:
-                taskList.add(addTask(userInput,currentIndex + 1));
-                currentIndex++;
+                addTask(userInput, taskList);
                 break;
 
+            // update task
             case 3:
+                updateTask(userInput, taskList);
+                break;
+
+            // end program
+            case 4:
                 break;
 
             default:
@@ -43,23 +49,10 @@ void main() {
 
 }
 
-// Creates a new task
-Task addTask(Scanner input, int id) {
-
-    System.out.println("\nDescribe your new task:");
-    String newTaskDescription = input.nextLine();
-
-    Task newTask = new Task(id, newTaskDescription);
-
-    System.out.println("Task created!\n");
-    return newTask;
-
-}
-
 // Displays the details of a task using an index
 void viewTask(ArrayList<Task> taskList, int id) {
 
-    System.out.println((id + 1) + ". " + taskList.get(id));
+    System.out.println(id + ". " + taskList.get(id - 1));
 
 }
 
@@ -73,5 +66,40 @@ void viewAllTasks(ArrayList<Task> taskList) {
     }
 
     System.out.println();
+
+}
+
+// Creates a new task
+void addTask(Scanner input, ArrayList<Task> taskList) {
+
+    System.out.println("\nDescribe your new task:");
+    String newTaskDescription = input.nextLine();
+
+    Task newTask = new Task(taskList.size(), newTaskDescription);
+
+    System.out.println("Task created!\n");
+    taskList.add(newTask);
+
+}
+
+void updateTask(Scanner input, ArrayList<Task> taskList){
+
+    System.out.println("\nWhich task would you like to edit?");
+    System.out.print("[ ");
+    for (int i = 0; i < taskList.size(); i++){
+        if (i > 0) System.out.print(" | ");
+        System.out.print(i + 1);
+    }
+    System.out.print(" ]\n");
+    int id = input.nextInt();
+    input.nextLine();
+
+    System.out.println("\nDescribe your task:");
+    String newTaskDescription = input.nextLine();
+
+    Task newTask = new Task(id, newTaskDescription);
+
+    taskList.set(id - 1, newTask);
+    System.out.println("Task updated!\n");
 
 }
