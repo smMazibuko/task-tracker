@@ -1,7 +1,7 @@
 
 void main() {
 
-    ArrayList<Task> taskList = new ArrayList<Task>();
+    ArrayList<Task> taskList = new ArrayList<>();
     int userChoice = 1;
     Scanner userInput = new Scanner(System.in);
 
