@@ -7,9 +7,9 @@ void main() {
 
     System.out.println("Welcome to Task Tracker.\n");
 
-    while (userChoice != 5) {
+    while (userChoice != 4) {
 
-        System.out.println("Select an option: \n1) Create a new task\n2) View a task\n3) View all tasks\n4) Edit a task\n5) End program");
+        System.out.println("Select an option: \n1) Create a new task\n2) View your tasks\n3) Edit a task\n4) End program");
         userChoice = userInput.nextInt();
         userInput.nextLine(); // consume newline left over by nextInt()
 
@@ -19,27 +19,18 @@ void main() {
                 addTask(userInput, taskList);
                 break;
 
-            // view only one task
+            // view one or multiple tasks
             case 2:
                 viewTask(userInput, taskList);
                 break;
 
-            // view all tasks
-            case 3:
-                if (!taskList.isEmpty()) {
-                    viewAllTasks(taskList);
-                } else {
-                    System.out.println("No tasks found.\n");
-                }
-                break;
-
             // update an existing task
-            case 4:
+            case 3:
                 updateTask(userInput, taskList);
                 break;
 
             // end program
-            case 5:
+            case 4:
                 break;
 
             default:
@@ -76,12 +67,13 @@ void viewTask(Scanner scanner, ArrayList<Task> taskList) {
             System.out.print(taskList.get(i).id);
             if (i < taskList.size() - 1) System.out.print(" | ");
         }
-        System.out.println(" ]");
+        System.out.println(" ] [ 0 => All Tasks ]");
 
         int chosenId = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.println("> " + taskList.get(chosenId - 1).description + "\n");
+        if (chosenId == 0) viewAllTasks(taskList);
+        else System.out.println("> " + taskList.get(chosenId - 1).description + "\n");
 
     } else {
         System.out.println("No tasks found.\n");
