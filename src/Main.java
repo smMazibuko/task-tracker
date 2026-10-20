@@ -1,79 +1,75 @@
 
-void main() {
+import java.util.ArrayList;
+import java.util.Scanner;
+
+void main(String[] args) {
 
     ArrayList<Task> taskList = new ArrayList<>();
-    int userChoice = 1;
-    Scanner userInput = new Scanner(System.in);
 
-    System.out.println("Welcome to Task Tracker.\n");
-
-    while (userChoice != 4) {
-
-        System.out.println("Select an option: \n1) Create a new task\n2) View your tasks\n3) Edit a task\n4) End program");
-        userChoice = userInput.nextInt();
-        userInput.nextLine(); // consume newline left over by nextInt()
-
-        switch (userChoice) {
-            // create task
-            case 1:
-                addTask(userInput, taskList);
-                break;
-
-            // view one or multiple tasks
-            case 2:
-                viewTask(userInput, taskList);
-                break;
-
-            // update an existing task
-            case 3:
-                updateTask(userInput, taskList);
-                break;
-
-            // end program
-            case 4:
-                break;
-
-            default:
-                System.out.println("Invalid input.\n");
-                break;
-        }
-
+    if (args.length == 0) {
+        printUsage();
+        return;
     }
 
-    userInput.close();
-    System.out.println("\nGoodbye.");
+    String command = args[0].toLowerCase();
+
+    switch (command) {
+        // task add "Wash dishes"
+        case "add":
+            if (args.length < 2) {
+                System.out.println("Usage: task add \"<description>\"");
+            } else {
+                String description = joinArgs(args, 1);
+                addTask(taskList, description);
+            }
+            break;
+
+        // task all — view every task
+        case "all":
+            viewAllTasks(taskList);
+            break;
+
+        // task edit <id>
+        case "edit":
+            if (args.length < 2) {
+                System.out.println("Usage: task edit <id>");
+            } else {
+                updateTask(taskList, parseId(args[1]));
+            }
+            break;
+
+        // task help
+        case "help":
+            printUsage();
+            break;
+
+        // task <id> — view a single task by its number
+        default:
+            int id = parseId(command);
+            if (id > 0) {
+                viewTask(taskList, id);
+            } else {
+                System.out.println("Unknown command: " + command);
+                printUsage();
+            }
+            break;
+    }
 
 }
 
 // Creates a new task
-void addTask(Scanner input, ArrayList<Task> taskList) {
-
-    System.out.println("\nDescribe your new task:");
-    String newTaskDescription = input.nextLine();
-
-    Task newTask = new Task(taskList.size() + 1, newTaskDescription);
-
-    System.out.println("Task created!\n");
+void addTask(ArrayList<Task> taskList, String description) {
+    Task newTask = new Task(taskList.size() + 1, description);
     taskList.add(newTask);
-
+    System.out.println("Task created!\n");
 }
 
 // Displays the details of one specified task
-void viewTask(Scanner scanner, ArrayList<Task> taskList) {
+void viewTask(ArrayList<Task> taskList, int id) {
 
     if (!taskList.isEmpty()) {
-        System.out.print("\nChoose a task to view:\n[ ");
-        for (int i = 0; i < taskList.size(); i++) {
-            System.out.print(taskList.get(i).id);
-            if (i < taskList.size() - 1) System.out.print(" | ");
-        }
-        System.out.println(" ] [ 0 => All Tasks ]");
-
-        int chosenId = scanner.nextInt();
-        scanner.nextLine();
-
-        if (chosenId == 0) viewAllTasks(taskList);
-        else System.out.println("> " + taskList.get(chosenId - 1).description + "\n");
+        if (id == 0) viewAllTasks(taskList);
+        else System.out.println("> " + taskList.get(id - 1).description + "\n");
 
     } else {
         System.out.println("No tasks found.\n");
@@ -94,18 +90,9 @@ void viewAllTasks(ArrayList<Task> taskList) {
 
 }
 
-void updateTask(Scanner input, ArrayList<Task> taskList){
+void updateTask(ArrayList<Task> taskList, int id){
 
-    System.out.println("\nWhich task would you like to edit?");
-    System.out.print("[ ");
-    for (int i = 0; i < taskList.size(); i++){
-        if (i > 0) System.out.print(" | ");
-        System.out.print(i + 1);
-    }
-    System.out.print(" ]\n");
-    int id = input.nextInt();
-    input.nextLine();
-
+    Scanner input = new Scanner(System.in);
     System.out.println("\nDescribe your task:");
     String newTaskDescription = input.nextLine();
 
@@ -114,4 +101,36 @@ void updateTask(Scanner input, ArrayList<Task> taskList){
     taskList.set(id - 1, newTask);
     System.out.println("Task updated!\n");
 
+}
+
+// Joins args from a starting index into a single string
+String joinArgs(String[] args, int from) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = from; i < args.length; i++) {
+        if (i > from) sb.append(" ");
+        sb.append(args[i]);
+    }
+    return sb.toString();
+}
+
+// Safely parses an integer, returns -1 on failure
+int parseId(String s) {
+    try {
+        return Integer.parseInt(s);
+    } catch (NumberFormatException e) {
+        return -1;
+    }
+}
+
+// Prints the help / usage message
+void printUsage() {
+    System.out.println("""
+
+            Task Tracker — Usage:
+              task add "<description>"    Add a new task
+              task all                    View all tasks
+              task <id>                   View a single task
+              task edit <id>              Edit a task's description
+              task help                   Show this help message
+            """);
 }
