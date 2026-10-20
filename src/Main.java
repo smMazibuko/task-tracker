@@ -1,10 +1,11 @@
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 void main(String[] args) {
 
-    ArrayList<Task> taskList = new ArrayList<>();
+    ArrayList<Task> taskList = loadTasks();
 
     if (args.length == 0) {
         printUsage();
@@ -21,6 +22,7 @@ void main(String[] args) {
             } else {
                 String description = joinArgs(args, 1);
                 addTask(taskList, description);
+                saveTasks(taskList);
             }
             break;
 
@@ -35,6 +37,7 @@ void main(String[] args) {
                 System.out.println("Usage: task remove <id>");
             } else {
                 removeTask(taskList, parseId(args[1]));
+                saveTasks(taskList);
             }
             break;
 
@@ -44,6 +47,7 @@ void main(String[] args) {
                 System.out.println("Usage: task edit <id>");
             } else {
                 editTask(taskList, parseId(args[1]));
+                saveTasks(taskList);
             }
             break;
 
@@ -53,6 +57,7 @@ void main(String[] args) {
                 System.out.println("Usage: task done <id>");
             } else {
                 markDone(taskList, parseId(args[1]));
+                saveTasks(taskList);
             }
             break;
 
@@ -197,4 +202,48 @@ void printUsage() {
               task done <id>              Mark a task as complete
               task help                   Show this help message
             """);
+}
+
+// DATA STORAGE
+
+static final String DATA_FILE = "tasks.csv";
+
+// Loads tasks from the CSV file
+ArrayList<Task> loadTasks() {
+    ArrayList<Task> list = new ArrayList<>();
+    File file = new File(DATA_FILE);
+    if (!file.exists())
+        return list;
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Format: id|isComplete|description
+            String[] parts = line.split("\\|", 3);
+            if (parts.length == 3) {
+                int id = Integer.parseInt(parts[0]);
+                boolean done = Boolean.parseBoolean(parts[1]);
+                String desc = parts[2];
+                Task task = new Task(id, desc);
+                if (done)
+                    task.completeTask();
+                list.add(task);
+            }
+        }
+    } catch (IOException e) {
+        System.out.println("Warning: could not load tasks — " + e.getMessage());
+    }
+    return list;
+}
+
+// Saves all tasks to the CSV file
+void saveTasks(ArrayList<Task> taskList) {
+    try (PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE))) {
+        for (Task task : taskList) {
+            // Format: id|isComplete|description
+            writer.println(task.id + "|" + task.isComplete + "|" + task.description);
+        }
+    } catch (IOException e) {
+        System.out.println("Error: could not save tasks — " + e.getMessage());
+    }
 }
