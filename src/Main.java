@@ -43,7 +43,7 @@ void main(String[] args) {
             if (args.length < 2) {
                 System.out.println("Usage: task edit <id>");
             } else {
-                updateTask(taskList, parseId(args[1]));
+                editTask(taskList, parseId(args[1]));
             }
             break;
 
@@ -75,37 +75,41 @@ void main(String[] args) {
 
 }
 
-// Creates a new task
+// Creates a new task and appends it to the list
 void addTask(ArrayList<Task> taskList, String description) {
-    Task newTask = new Task(taskList.size() + 1, description);
+    int nextId = taskList.isEmpty() ? 1 : taskList.getLast().id + 1;
+    Task newTask = new Task(nextId, description);
     taskList.add(newTask);
-    System.out.println("Task created!\n");
+    System.out.println("Task #" + nextId + " created: " + description);
 }
 
-// Displays the details of one specified task
+// Displays the details of one task by ID
 void viewTask(ArrayList<Task> taskList, int id) {
-
-    if (!taskList.isEmpty()) {
-        if (id == 0) viewAllTasks(taskList);
-        else System.out.println("> " + taskList.get(id - 1).description + "\n");
-
-    } else {
-        System.out.println("No tasks found.\n");
+    if (taskList.isEmpty()) {
+        System.out.println("No tasks found.");
+        return;
     }
 
+    Task task = findById(taskList, id);
+    if (task == null) {
+        System.out.println("Task #" + id + " not found.");
+    } else {
+        printTask(task);
+    }
 }
 
-// Displays every task the list
+// Displays every task in the list
 void viewAllTasks(ArrayList<Task> taskList) {
+    if (taskList.isEmpty()) {
+        System.out.println("No tasks found.");
+        return;
+    }
 
     System.out.println("\nAll Tasks:");
-
-    for (int i = 0; i < taskList.size(); i++) {
-        System.out.println((i + 1) + ". " + taskList.get(i).description);
+    for (Task task : taskList) {
+        printTask(task);
     }
-
     System.out.println();
-
 }
 
 // Removes a task by ID
@@ -119,17 +123,26 @@ void removeTask(ArrayList<Task> taskList, int id) {
     }
 }
 
-void updateTask(ArrayList<Task> taskList, int id){
+// Edits an existing task — prompts for a new description via stdin
+void editTask(ArrayList<Task> taskList, int id) {
+    Task task = findById(taskList, id);
+    if (task == null) {
+        System.out.println("Task #" + id + " not found.");
+        return;
+    }
 
     Scanner input = new Scanner(System.in);
-    System.out.println("\nDescribe your task:");
-    String newTaskDescription = input.nextLine();
+    System.out.println("Current: " + task.description);
+    System.out.print("New description: ");
+    String newDescription = input.nextLine();
+    task.description = newDescription;
+    System.out.println("Task #" + id + " updated.");
+}
 
-    Task newTask = new Task(id, newTaskDescription);
-
-    taskList.set(id - 1, newTask);
-    System.out.println("Task updated!\n");
-
+// Pretty-prints a single task
+void printTask(Task task) {
+    String status = task.isComplete ? "✓" : "○";
+    System.out.println("  [" + status + "] #" + task.id + "  " + task.description);
 }
 
 // Marks a task as complete
