@@ -29,12 +29,30 @@ void main(String[] args) {
             viewAllTasks(taskList);
             break;
 
+        // task remove <id>
+        case "remove":
+            if (args.length < 2) {
+                System.out.println("Usage: task remove <id>");
+            } else {
+                removeTask(taskList, parseId(args[1]));
+            }
+            break;
+
         // task edit <id>
         case "edit":
             if (args.length < 2) {
                 System.out.println("Usage: task edit <id>");
             } else {
                 updateTask(taskList, parseId(args[1]));
+            }
+            break;
+
+        // task done <id>
+        case "done":
+            if (args.length < 2) {
+                System.out.println("Usage: task done <id>");
+            } else {
+                markDone(taskList, parseId(args[1]));
             }
             break;
 
@@ -90,6 +108,17 @@ void viewAllTasks(ArrayList<Task> taskList) {
 
 }
 
+// Removes a task by ID
+void removeTask(ArrayList<Task> taskList, int id) {
+    Task task = findById(taskList, id);
+    if (task == null) {
+        System.out.println("Task #" + id + " not found.");
+    } else {
+        taskList.remove(task);
+        System.out.println("Task #" + id + " removed.");
+    }
+}
+
 void updateTask(ArrayList<Task> taskList, int id){
 
     Scanner input = new Scanner(System.in);
@@ -101,6 +130,26 @@ void updateTask(ArrayList<Task> taskList, int id){
     taskList.set(id - 1, newTask);
     System.out.println("Task updated!\n");
 
+}
+
+// Marks a task as complete
+void markDone(ArrayList<Task> taskList, int id) {
+    Task task = findById(taskList, id);
+    if (task == null) {
+        System.out.println("Task #" + id + " not found.");
+        return;
+    }
+    task.completeTask();
+    System.out.println("Task #" + id + " marked as done.");
+}
+
+// Finds a task by its ID, returns null if not found
+Task findById(ArrayList<Task> taskList, int id) {
+    for (Task task : taskList) {
+        if (task.id == id)
+            return task;
+    }
+    return null;
 }
 
 // Joins args from a starting index into a single string
@@ -131,6 +180,8 @@ void printUsage() {
               task all                    View all tasks
               task <id>                   View a single task
               task edit <id>              Edit a task's description
+              task remove <id>            Remove a task
+              task done <id>              Mark a task as complete
               task help                   Show this help message
             """);
 }
