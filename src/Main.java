@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -80,6 +79,8 @@ void main(String[] args) {
 
 }
 
+// COMMANDS
+
 // Creates a new task and appends it to the list
 void addTask(ArrayList<Task> taskList, String description) {
     int nextId = taskList.isEmpty() ? 1 : taskList.getLast().id + 1;
@@ -144,12 +145,6 @@ void editTask(ArrayList<Task> taskList, int id) {
     System.out.println("Task #" + id + " updated.");
 }
 
-// Pretty-prints a single task
-void printTask(Task task) {
-    String status = task.isComplete ? "✓" : "○";
-    System.out.println("  [" + status + "] #" + task.id + "  " + task.description);
-}
-
 // Marks a task as complete
 void markDone(ArrayList<Task> taskList, int id) {
     Task task = findById(taskList, id);
@@ -161,6 +156,8 @@ void markDone(ArrayList<Task> taskList, int id) {
     System.out.println("Task #" + id + " marked as done.");
 }
 
+// HELPERS
+
 // Finds a task by its ID, returns null if not found
 Task findById(ArrayList<Task> taskList, int id) {
     for (Task task : taskList) {
@@ -170,11 +167,18 @@ Task findById(ArrayList<Task> taskList, int id) {
     return null;
 }
 
+// Pretty-prints a single task
+void printTask(Task task) {
+    String status = task.isComplete ? "✓" : "○";
+    System.out.println("  [" + status + "] #" + task.id + "  " + task.description);
+}
+
 // Joins args from a starting index into a single string
 String joinArgs(String[] args, int from) {
     StringBuilder sb = new StringBuilder();
     for (int i = from; i < args.length; i++) {
-        if (i > from) sb.append(" ");
+        if (i > from)
+            sb.append(" ");
         sb.append(args[i]);
     }
     return sb.toString();
